@@ -230,7 +230,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 🙏 Acknowledgments
 
 - **[Google Gemini](https://ai.google.dev/)** for providing the AI capabilities
-- **[Biz4Group](https://biz4group.com/)** for the initial development
 - **Open Source Community** for the amazing tools and libraries
 
 ---
