@@ -1,145 +1,252 @@
-# MOM Builder Free
+# 📝 MOM Builder Free
 
-MOM Builder Free is a web application that generates professional Minutes of Meeting (MOM) from text or images of handwritten notes using Google Gemini 2.5 Flash AI.
+<div align="center">
 
-## Project Structure
+![MOM Builder Free](https://img.shields.io/badge/MOM%20Builder-Free-blue?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green?style=for-the-badge&logo=fastapi)
+![Flask](https://img.shields.io/badge/Flask-3.0+-red?style=for-the-badge&logo=flask)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-This repository contains both the backend and frontend of the application:
+**Generate professional Minutes of Meeting (MOM) from text or images using Google Gemini 2.5 Flash AI**
 
-- [Backend](#backend) - FastAPI server with Gemini integration
-- [Frontend](#frontend) - Flask web application with HTML templates
+[🚀 Quick Start](#-quick-start) • [📖 Documentation](#-documentation) • [🎯 Features](#-features) • [🛠️ Tech Stack](#️-tech-stack) • [🤝 Contributing](#-contributing)
 
-## Backend
+</div>
 
-The backend is a FastAPI application that provides RESTful APIs for processing text and images using the Gemini 2.5 Flash model.
+---
 
-### Features
-- RESTful API for processing text and image inputs
-- Integration with Gemini 2.5 Flash for OCR and text processing
-- Support for both text and image inputs (1-10 images)
-- Privacy-first approach with secure, temporary processing
-- Timezone handling (IST/Asia-Kolkata)
-- Structured MOM output in Markdown format
-- Async processing for better performance
+## 🎯 Features
 
-### Tech Stack
-- FastAPI
-- Google Generative AI (Gemini API)
-- Pydantic for data validation
-- Python-dotenv for environment management
-- Uvicorn for ASGI server
+✨ **Dual Input Modes**
+- 📝 **Text Input**: Paste meeting notes directly
+- 🖼️ **Image Upload**: Upload 1-10 images of handwritten notes
 
-### Getting Started
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
+🤖 **AI-Powered Processing**
+- 🧠 Google Gemini 2.5 Flash integration
+- 🔍 Advanced OCR for handwritten text
+- 📋 Structured MOM generation
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+🎨 **Modern Interface**
+- 📱 Responsive design for all devices
+- 🎯 Clean, professional UI
+- ⚡ Real-time processing status
+- 📥 Downloadable Markdown output
 
-3. Set up environment variables:
-   Create a `.env` file and add your Gemini API key:
-   ```
-   GEMINI_API_KEY=your_gemini_api_key_here
-   PORT=8000
-   ```
+🔒 **Privacy & Security**
+- 🛡️ Secure, temporary processing
+- 🌍 IST timezone handling
+- 🔐 No data storage
 
-4. Start the server:
-   ```bash
-   python main.py
-   ```
-   Or using uvicorn:
-   ```bash
-   uvicorn main:app --reload --host 0.0.0.0 --port 8000
-   ```
+---
 
-### API Endpoints
-- GET `/` - Root endpoint
-- GET `/api/health` - Health check endpoint
-- POST `/api/process-text` - Process text input
-- POST `/api/process-images` - Process image inputs (base64)
+## 📸 Interface Screenshots
 
-## Frontend
+### Text Input Interface
+![Text Input Interface](./assets/text-input-interface.png)
 
-The frontend is a Flask web application that provides a clean UI for users to input text or upload images and receive generated MOMs.
+### Image Upload Interface
+![Image Upload Interface](./assets/image-upload-interface.png)
 
-### Features
-- Clean, modern UI with stationery material theme
-- Text input area for pasting meeting notes
-- Image upload for 1-10 images of handwritten notes
-- Real-time processing status
-- Downloadable MOM in Markdown format
-- Responsive design for all devices
-- Server-side rendering with Jinja2 templates
+---
 
-### Tech Stack
-- Flask
-- Jinja2 templates
-- Tailwind CSS for styling
-- Vanilla JavaScript for interactivity
-- Marked.js for Markdown rendering
+## 🚀 Quick Start
 
-### Getting Started
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
+### Prerequisites
+- Python 3.8 or higher
+- Google Gemini API key ([Get one here](https://makersuite.google.com/app/apikey))
 
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/yourusername/mom-builder-free.git
+cd mom-builder-free
+```
 
-3. Set up environment variables:
-   Create a `.env` file:
-   ```
-   SECRET_KEY=your-secret-key-here
-   BACKEND_URL=http://localhost:8000
-   PORT=5000
-   ```
+### 2️⃣ Set Up Backend (FastAPI)
+```bash
+cd backend
+pip install -r requirements.txt
 
-4. Start the development server:
-   ```bash
-   python app.py
-   ```
+# Create .env file
+echo "GEMINI_API_KEY=your_gemini_api_key_here" > .env
+echo "PORT=8000" >> .env
 
-## Running the Complete Application
+# Start backend server
+python main.py
+```
 
-1. Start the FastAPI backend:
-   ```bash
-   cd backend
-   python main.py
-   ```
+### 3️⃣ Set Up Frontend (Flask)
+```bash
+# In a new terminal
+cd frontend
+pip install -r requirements.txt
 
-2. Start the Flask frontend (in a new terminal):
-   ```bash
-   cd frontend
-   python app.py
-   ```
+# Create .env file
+echo "SECRET_KEY=your-secret-key-here" > .env
+echo "BACKEND_URL=http://localhost:8000" >> .env
+echo "PORT=5000" >> .env
 
-3. Open your browser and navigate to `http://localhost:5000`
+# Start frontend server
+python app.py
+```
 
-## Deployment
+### 4️⃣ Access the Application
+Open your browser and navigate to: **http://localhost:5000**
 
-### Backend Deployment
-The FastAPI backend can be deployed using:
-- Docker containers
-- Cloud platforms (AWS, GCP, Azure)
-- Heroku, Railway, or similar PaaS
+---
 
-### Frontend Deployment
-The Flask frontend can be deployed using:
-- Traditional web servers (Apache, Nginx)
-- Cloud platforms
-- PaaS solutions
+## 🏗️ Project Structure
 
-## Contributing
+```
+mom-builder-free/
+├── 📁 backend/                 # FastAPI Backend
+│   ├── 📁 models/             # Pydantic models
+│   ├── 📁 services/           # Business logic
+│   ├── 📁 utils/              # Helper utilities
+│   ├── 📄 main.py             # FastAPI app entry point
+│   └── 📄 requirements.txt    # Python dependencies
+├── 📁 frontend/               # Flask Frontend
+│   ├── 📁 static/             # CSS, JS, assets
+│   ├── 📁 templates/          # Jinja2 templates
+│   ├── 📄 app.py              # Flask app entry point
+│   └── 📄 requirements.txt    # Python dependencies
+├── 📁 assets/                 # Documentation assets
+├── 📄 README.md               # Project documentation
+└── 📄 .gitignore             # Git ignore rules
+```
 
-Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
+---
 
-## License
+## 🛠️ Tech Stack
 
-This project is licensed under the MIT License.
+### Backend
+- **[FastAPI](https://fastapi.tiangolo.com/)** - Modern, fast web framework
+- **[Google Generative AI](https://ai.google.dev/)** - Gemini 2.5 Flash integration
+- **[Pydantic](https://pydantic.dev/)** - Data validation
+- **[Uvicorn](https://www.uvicorn.org/)** - ASGI server
+
+### Frontend
+- **[Flask](https://flask.palletsprojects.com/)** - Lightweight web framework
+- **[Jinja2](https://jinja.palletsprojects.com/)** - Template engine
+- **[Tailwind CSS](https://tailwindcss.com/)** - Utility-first CSS
+- **[Marked.js](https://marked.js.org/)** - Markdown parser
+
+---
+
+## 📖 API Documentation
+
+### Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/` | Root endpoint |
+| `GET` | `/api/health` | Health check |
+| `POST` | `/api/process-text` | Process text input |
+| `POST` | `/api/process-images` | Process image inputs |
+
+### Example Request (Text Processing)
+```bash
+curl -X POST "http://localhost:8000/api/process-text" \
+     -H "Content-Type: application/json" \
+     -d '{"text": "Meeting notes here..."}'
+```
+
+### Example Response
+```json
+{
+  "success": true,
+  "data": {
+    "content": "# Minutes of Meeting — Project Kickoff\n\n**Date:** 29-Sep-2025...",
+    "format": "markdown"
+  }
+}
+```
+
+---
+
+## 🚀 Deployment
+
+### Backend Deployment Options
+- **Docker**: Containerized deployment
+- **Cloud Platforms**: AWS, GCP, Azure
+- **PaaS**: Heroku, Railway, Render
+
+### Frontend Deployment Options
+- **Traditional Servers**: Apache, Nginx
+- **Cloud Platforms**: Vercel, Netlify
+- **PaaS Solutions**: Heroku, Railway
+
+### Environment Variables
+Create `.env` files in both `backend/` and `frontend/` directories:
+
+**Backend `.env`:**
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+PORT=8000
+ENVIRONMENT=production
+```
+
+**Frontend `.env`:**
+```env
+SECRET_KEY=your-secret-key-here
+BACKEND_URL=https://your-backend-url.com
+PORT=5000
+ENVIRONMENT=production
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Development Setup
+```bash
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Run tests
+pytest
+
+# Format code
+black .
+isort .
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **[Google Gemini](https://ai.google.dev/)** for providing the AI capabilities
+- **[Biz4Group](https://biz4group.com/)** for the initial development
+- **Open Source Community** for the amazing tools and libraries
+
+---
+
+## 📞 Support
+
+- 🐛 **Bug Reports**: [Create an issue](https://github.com/yourusername/mom-builder-free/issues)
+- 💡 **Feature Requests**: [Start a discussion](https://github.com/yourusername/mom-builder-free/discussions)
+- 📧 **Contact**: [your-email@example.com](mailto:your-email@example.com)
+
+---
+
+<div align="center">
+
+**⭐ Star this repository if you find it helpful!**
+
+Made with ❤️ by [Your Name](https://github.com/yourusername)
+
+</div>

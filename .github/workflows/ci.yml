@@ -1,0 +1,124 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov black isort flake8 mypy
+    
+    - name: Lint backend code
+      run: |
+        cd backend
+        black --check .
+        isort --check-only .
+        flake8 .
+        mypy . --ignore-missing-imports
+    
+    - name: Test backend
+      run: |
+        cd backend
+        pytest --cov=. --cov-report=xml
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+  test-frontend:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov black isort flake8
+    
+    - name: Lint frontend code
+      run: |
+        cd frontend
+        black --check .
+        isort --check-only .
+        flake8 .
+    
+    - name: Test frontend
+      run: |
+        cd frontend
+        pytest --cov=. --cov-report=xml
+      env:
+        SECRET_KEY: test-secret-key
+        BACKEND_URL: http://localhost:8000
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run security scan
+      uses: securecodewarrior/github-action-add-sarif@v1
+      with:
+        sarif-file: 'security-scan-results.sarif'
+    
+    - name: Run Bandit security scan
+      run: |
+        pip install bandit
+        bandit -r backend/ frontend/ -f json -o bandit-report.json || true
+    
+    - name: Upload security scan results
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-scan-results
+        path: bandit-report.json
+
+  build-and-deploy:
+    needs: [test-backend, test-frontend]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Build Docker images
+      run: |
+        docker build -t mom-builder-backend ./backend
+        docker build -t mom-builder-frontend ./frontend
+    
+    - name: Run integration tests
+      run: |
+        # Add integration tests here
+        echo "Integration tests would run here"
+    
+    # Add deployment steps here based on your deployment target
+    # - name: Deploy to production
+    #   run: |
+    #     echo "Deployment steps would go here"
