@@ -234,14 +234,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-## 📞 Support
-
-- 🐛 **Bug Reports**: [Create an issue](https://github.com/yourusername/mom-builder-free/issues)
-- 💡 **Feature Requests**: [Start a discussion](https://github.com/yourusername/mom-builder-free/discussions)
-- 📧 **Contact**: [your-email@example.com](mailto:your-email@example.com)
-
----
-
 <div align="center">
 
 **⭐ Star this repository if you find it helpful!**
