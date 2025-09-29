@@ -1,0 +1,178 @@
+/* Custom CSS for MOM Builder Free */
+
+/* Paper-like card styling */
+.paper-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    border-radius: 2px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Paper texture background */
+.paper-texture {
+    background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23f0f0f0' fill-opacity='0.4' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+    background-color: #fafafa;
+}
+
+/* Button styling */
+.btn-primary {
+    transition: all 0.2s ease;
+}
+
+.btn-primary:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Dropzone styling */
+.dropzone {
+    transition: all 0.2s ease;
+}
+
+.dropzone.dragover {
+    background-color: #e3f2fd;
+    border-color: #0d47a1;
+}
+
+/* Image preview styling */
+.image-preview {
+    position: relative;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 1;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.remove-image:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+/* MOM content styling */
+.mom-content {
+    line-height: 1.6;
+}
+
+.mom-content h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #333;
+    border-bottom: 2px solid #1976d2;
+    padding-bottom: 0.5rem;
+}
+
+.mom-content h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #444;
+}
+
+.mom-content ul, .mom-content ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.mom-content li {
+    margin-bottom: 0.5rem;
+}
+
+.mom-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+.mom-content th, .mom-content td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.mom-content th {
+    background-color: #f5f5f5;
+    font-weight: 600;
+}
+
+.mom-content p {
+    margin-bottom: 0.75rem;
+}
+
+.mom-content strong {
+    font-weight: 600;
+}
+
+/* Premium card effect */
+.premium-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.premium-card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+/* Tab styling */
+.tab-button {
+    transition: all 0.2s ease;
+}
+
+.tab-button.active {
+    border-color: #4f46e5 !important;
+    color: #4f46e5 !important;
+}
+
+/* Loading animation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .mom-content h1 {
+        font-size: 1.5rem;
+    }
+    
+    .mom-content h2 {
+        font-size: 1.125rem;
+    }
+    
+    .premium-card {
+        padding: 1rem;
+    }
+}
