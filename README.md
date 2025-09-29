@@ -166,31 +166,45 @@ curl -X POST "http://localhost:8000/api/process-text" \
 
 ## 🚀 Deployment
 
-### Backend Deployment Options
-- **Docker**: Containerized deployment
-- **Cloud Platforms**: AWS, GCP, Azure
-- **PaaS**: Heroku, Railway, Render
+### Live Demo
+- **Frontend**: [https://mom-builder-free.vercel.app](https://mom-builder-free.vercel.app) (Vercel)
+- **Backend API**: [https://mom-builder-backend.railway.app](https://mom-builder-backend.railway.app) (Railway)
 
-### Frontend Deployment Options
-- **Traditional Servers**: Apache, Nginx
-- **Cloud Platforms**: Vercel, Netlify
-- **PaaS Solutions**: Heroku, Railway
+### Quick Deploy
+
+#### Backend on Railway
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/your-template-id)
+
+1. Click the Railway button above
+2. Add your `GEMINI_API_KEY` environment variable
+3. Deploy and note the Railway URL
+
+#### Frontend on Vercel
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/krishn1122/mom-builder-free&project-name=mom-builder-free&repository-name=mom-builder-free&root-directory=frontend)
+
+1. Click the Vercel button above
+2. Set root directory to `frontend`
+3. Add environment variables:
+   - `SECRET_KEY`: Your secret key
+   - `BACKEND_URL`: Your Railway backend URL
+   - `ENVIRONMENT`: `production`
+
+### Manual Deployment
+For detailed step-by-step instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ### Environment Variables
-Create `.env` files in both `backend/` and `frontend/` directories:
 
-**Backend `.env`:**
+**Backend (Railway):**
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
-PORT=8000
 ENVIRONMENT=production
+PORT=8000
 ```
 
-**Frontend `.env`:**
+**Frontend (Vercel):**
 ```env
 SECRET_KEY=your-secret-key-here
-BACKEND_URL=https://your-backend-url.com
-PORT=5000
+BACKEND_URL=https://your-railway-app.railway.app
 ENVIRONMENT=production
 ```
 
@@ -237,9 +251,9 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ## 📞 Support
 
-- 🐛 **Bug Reports**: [Create an issue](https://github.com/yourusername/mom-builder-free/issues)
-- 💡 **Feature Requests**: [Start a discussion](https://github.com/yourusername/mom-builder-free/discussions)
-- 📧 **Contact**: [your-email@example.com](mailto:your-email@example.com)
+- 🐛 **Bug Reports**: [Create an issue](https://github.com/krishn1122/mom-builder-free/issues)
+- 💡 **Feature Requests**: [Start a discussion](https://github.com/krishn1122/mom-builder-free/discussions)
+- 📧 **Contact**: [krishnjatav1122@gmail.com](mailto:krishnjatav1122@gmail.com)
 
 ---
 

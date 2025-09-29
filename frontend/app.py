@@ -103,6 +103,9 @@ def not_found(error):
 def internal_error(error):
     return render_template('500.html'), 500
 
+# For Vercel deployment
+app.debug = os.getenv('ENVIRONMENT', 'development') == 'development'
+
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
     debug = os.getenv('ENVIRONMENT', 'development') == 'development'
