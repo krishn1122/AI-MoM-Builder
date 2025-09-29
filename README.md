@@ -244,16 +244,15 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ## 🙏 Acknowledgments
 
 - **[Google Gemini](https://ai.google.dev/)** for providing the AI capabilities
-- **[Biz4Group](https://biz4group.com/)** for the initial development
 - **Open Source Community** for the amazing tools and libraries
 
 ---
 
 ## 📞 Support
 
-- 🐛 **Bug Reports**: [Create an issue](https://github.com/krishn1122/mom-builder-free/issues)
-- 💡 **Feature Requests**: [Start a discussion](https://github.com/krishn1122/mom-builder-free/discussions)
-- 📧 **Contact**: [krishnjatav1122@gmail.com](mailto:krishnjatav1122@gmail.com)
+- 🐛 **Bug Reports**: [Create an issue](https://github.com/yourusername/mom-builder-free/issues)
+- 💡 **Feature Requests**: [Start a discussion](https://github.com/yourusername/mom-builder-free/discussions)
+- 📧 **Contact**: [your-email@example.com](mailto:your-email@example.com)
 
 ---
 
