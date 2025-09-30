@@ -343,15 +343,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-## 📞 Support
-
-- 🐛 **Bug Reports**: [Create an issue](https://github.com/krishn1122/mom-builder-free/issues)
-- 💡 **Feature Requests**: [Start a discussion](https://github.com/krishn1122/mom-builder-free/discussions)
-- 📧 **Contact**: [krishnjatav1122@gmail.com](mailto:krishnjatav1122@gmail.com)
-- 🌐 **Portfolio**: [krishn1122.github.io](https://krishn1122.github.io)
-
----
-
 ## 🚀 Future Roadmap
 
 - [ ] **Real-time Collaboration**: Multi-user editing
