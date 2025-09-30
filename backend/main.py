@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional
 import os
@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 import uvicorn
 
 from services.gemini_service import GeminiService
-from models.requests import TextProcessRequest, ImageProcessRequest
+from services.file_converter import FileConverter
+from models.requests import TextProcessRequest, ImageProcessRequest, DownloadRequest
 from utils.timezone_helper import TimezoneHelper
 
 # Load environment variables
@@ -75,25 +76,25 @@ async def process_text(request: TextProcessRequest):
         raise HTTPException(status_code=500, detail=f"Failed to process text: {str(e)}")
 
 @app.post("/api/process-images")
-async def process_images(request: ImageProcessRequest):
-    """Process image inputs and generate MOM"""
+async def process_files(request: ImageProcessRequest):
+    """Process file inputs (images, PDFs, DOCX, TXT) and generate MOM"""
     try:
         if not request.images or len(request.images) == 0:
-            raise HTTPException(status_code=400, detail="At least one image is required")
+            raise HTTPException(status_code=400, detail="At least one file is required")
         
         if len(request.images) > 10:
-            raise HTTPException(status_code=400, detail="Maximum 10 images allowed")
+            raise HTTPException(status_code=400, detail="Maximum 10 files allowed")
         
-        # Validate each image
-        for i, image in enumerate(request.images):
-            if not image or not isinstance(image, str):
-                raise HTTPException(status_code=400, detail=f"Invalid image data at index {i}")
+        # Validate each file
+        for i, file_data in enumerate(request.images):
+            if not file_data or not isinstance(file_data, str):
+                raise HTTPException(status_code=400, detail=f"Invalid file data at index {i}")
             
-            # Check if it's a valid base64 string or data URL
-            if not image.startswith('data:') and not image.replace('+', '').replace('/', '').replace('=', '').isalnum():
-                raise HTTPException(status_code=400, detail=f"Invalid image format at index {i}")
+            # Check if it's a valid data URL
+            if not file_data.startswith('data:'):
+                raise HTTPException(status_code=400, detail=f"Invalid file format at index {i}")
         
-        result = await gemini_service.generate_mom_from_images(request.images)
+        result = await gemini_service.generate_mom_from_files(request.images)
         
         return {
             "success": True,
@@ -102,7 +103,49 @@ async def process_images(request: ImageProcessRequest):
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to process images: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to process files: {str(e)}")
+
+@app.post("/api/download-mom/{format}")
+async def download_mom(format: str, request: DownloadRequest):
+    """Download MOM in specified format (txt or docx)"""
+    try:
+        if format not in ['txt', 'docx']:
+            raise HTTPException(status_code=400, detail="Invalid format. Supported formats: txt, docx")
+        
+        if not request.content or not request.content.strip():
+            raise HTTPException(status_code=400, detail="Content is required")
+        
+        filename = request.filename or "mom"
+        
+        if format == 'txt':
+            # Convert to plain text
+            txt_content = FileConverter.markdown_to_txt(request.content)
+            
+            return StreamingResponse(
+                iter([txt_content.encode('utf-8')]),
+                media_type='text/plain',
+                headers={"Content-Disposition": f"attachment; filename={filename}.txt"}
+            )
+        
+        elif format == 'docx':
+            # Convert to DOCX
+            try:
+                docx_io = FileConverter.markdown_to_docx(request.content)
+                
+                return StreamingResponse(
+                    iter([docx_io.getvalue()]),
+                    media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    headers={"Content-Disposition": f"attachment; filename={filename}.docx"}
+                )
+            except ImportError as ie:
+                raise HTTPException(status_code=500, detail=str(ie))
+            
+    except HTTPException:
+        raise
+    except ImportError as ie:
+        raise HTTPException(status_code=500, detail=f"Missing dependency: {str(ie)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to convert to {format}: {str(e)}")
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))

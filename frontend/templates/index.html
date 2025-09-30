@@ -26,7 +26,7 @@
                     id="image-tab"
                     class="tab-button whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 >
-                    Image Upload
+                    File Upload
                 </button>
             </nav>
         </div>
@@ -75,32 +75,32 @@
                     </div>
                 </div>
 
-                <!-- Image Upload Tab -->
+                <!-- File Upload Tab -->
                 <div id="image-input-section" class="tab-content hidden">
                     <div class="space-y-6">
                         <div 
                             id="dropzone"
                             class="dropzone p-8 text-center cursor-pointer border-2 border-dashed border-indigo-300 rounded-lg hover:bg-indigo-50 transition-colors"
                         >
-                            <input type="file" id="file-input" multiple accept="image/*" class="hidden">
+                            <input type="file" id="file-input" multiple accept="image/*,.pdf,.docx,.txt" class="hidden">
                             <div class="space-y-4">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                                 <div class="flex text-sm text-gray-600 justify-center">
                                     <p class="font-medium text-indigo-600 hover:text-indigo-500">
-                                        Upload images
+                                        Upload files
                                     </p>
                                     <p class="pl-1">or drag and drop</p>
                                 </div>
                                 <p class="text-xs text-gray-500">
-                                    PNG, JPG up to 10 images
+                                    Images (PNG, JPG), Documents (PDF, DOCX, TXT) - up to 10 files
                                 </p>
                             </div>
                         </div>
                         
                         <div id="image-preview-container" class="hidden">
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Uploaded Images (<span id="image-count">0</span>/10)</h3>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Uploaded Files (<span id="image-count">0</span>/10)</h3>
                             <div id="image-preview-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
                         </div>
                         
@@ -111,7 +111,7 @@
                                 class="btn-primary inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
                                 disabled
                             >
-                                Generate MOM from Images
+                                Generate MOM from Files
                             </button>
                         </div>
                     </div>
@@ -134,15 +134,52 @@
             <div class="px-4 py-5 sm:p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold text-gray-900">Generated Minutes of Meeting</h2>
-                    <button
-                        id="download-btn"
-                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                        <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
-                        </svg>
-                        Download MOM
-                    </button>
+                    <div class="relative inline-block text-left">
+                        <button
+                            id="download-btn"
+                            type="button"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            aria-expanded="false"
+                            aria-haspopup="true"
+                        >
+                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                            Download MOM
+                            <svg class="ml-2 -mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        
+                        <div id="download-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50" role="menu" aria-orientation="vertical">
+                            <div class="py-1" role="none">
+                                <button
+                                    id="download-txt"
+                                    class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 group flex items-center px-4 py-2 text-sm w-full text-left"
+                                    role="menuitem"
+                                >
+                                    <img src="/assets/txt.png" alt="TXT" class="mr-3 h-5 w-5">
+                                    Download as TXT
+                                </button>
+                                <button
+                                    id="download-docx"
+                                    class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 group flex items-center px-4 py-2 text-sm w-full text-left"
+                                    role="menuitem"
+                                >
+                                    <img src="/assets/docx.png" alt="DOCX" class="mr-3 h-5 w-5">
+                                    Download as DOCX
+                                </button>
+                                <button
+                                    id="download-md"
+                                    class="text-gray-700 hover:bg-gray-100 hover:text-gray-900 group flex items-center px-4 py-2 text-sm w-full text-left"
+                                    role="menuitem"
+                                >
+                                    <img src="/assets/substance.png" alt="Markdown" class="mr-3 h-5 w-5">
+                                    Download as Markdown
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="paper-texture premium-card">

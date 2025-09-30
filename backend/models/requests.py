@@ -6,3 +6,7 @@ class TextProcessRequest(BaseModel):
 
 class ImageProcessRequest(BaseModel):
     images: List[str]
+
+class DownloadRequest(BaseModel):
+    content: str
+    filename: str

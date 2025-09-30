@@ -33,8 +33,14 @@ class MOMBuilder {
         dropzone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
         dropzone.addEventListener('drop', (e) => this.handleDrop(e));
         
-        // Download MOM
-        document.getElementById('download-btn').addEventListener('click', () => this.downloadMOM());
+        // Download MOM dropdown
+        document.getElementById('download-btn').addEventListener('click', () => this.toggleDownloadDropdown());
+        document.getElementById('download-txt').addEventListener('click', () => this.downloadMOM('txt'));
+        document.getElementById('download-docx').addEventListener('click', () => this.downloadMOM('docx'));
+        document.getElementById('download-md').addEventListener('click', () => this.downloadMOM('md'));
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => this.handleOutsideClick(e));
         
         // Text input validation
         const textInput = document.getElementById('meeting-notes');
@@ -166,32 +172,104 @@ class MOMBuilder {
     }
 
     processFiles(files) {
-        const imageFiles = files.filter(file => file.type.startsWith('image/'));
+        const supportedTypes = [
+            'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+            'application/pdf',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+            'application/msword', // .doc
+            'text/plain'
+        ];
         
-        if (imageFiles.length === 0) {
-            this.showError('Please select valid image files (PNG, JPG)');
-            return;
-        }
-        
-        if (this.uploadedImages.length + imageFiles.length > 10) {
-            this.showError('Maximum 10 images allowed');
-            return;
-        }
-        
-        imageFiles.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const imageData = {
-                    id: Math.random().toString(36).substr(2, 9),
-                    file: file,
-                    dataUrl: e.target.result
-                };
-                
-                this.uploadedImages.push(imageData);
-                this.updateImagePreview();
-            };
-            reader.readAsDataURL(file);
+        const validFiles = files.filter(file => {
+            return supportedTypes.includes(file.type) || 
+                   file.name.toLowerCase().endsWith('.txt') ||
+                   file.name.toLowerCase().endsWith('.docx') ||
+                   file.name.toLowerCase().endsWith('.pdf');
         });
+        
+        if (validFiles.length === 0) {
+            this.showError('Please select valid files (Images: PNG, JPG, GIF, WEBP; Documents: PDF, DOCX, TXT)');
+            return;
+        }
+        
+        if (this.uploadedImages.length + validFiles.length > 10) {
+            this.showError('Maximum 10 files allowed');
+            return;
+        }
+        
+        validFiles.forEach(file => {
+            if (file.type.startsWith('image/')) {
+                // Handle images as before (base64)
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const fileData = {
+                        id: Math.random().toString(36).substr(2, 9),
+                        file: file,
+                        dataUrl: e.target.result,
+                        type: 'image',
+                        name: file.name
+                    };
+                    
+                    this.uploadedImages.push(fileData);
+                    this.updateImagePreview();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // Handle documents (base64 for transmission)
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const fileData = {
+                        id: Math.random().toString(36).substr(2, 9),
+                        file: file,
+                        dataUrl: e.target.result,
+                        type: this.getFileType(file),
+                        name: file.name,
+                        size: this.formatFileSize(file.size)
+                    };
+                    
+                    this.uploadedImages.push(fileData);
+                    this.updateImagePreview();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
+    getFileType(file) {
+        if (file.type.startsWith('image/')) return 'image';
+        if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) return 'pdf';
+        if (file.type.includes('wordprocessingml') || file.name.toLowerCase().endsWith('.docx')) return 'docx';
+        if (file.type === 'text/plain' || file.name.toLowerCase().endsWith('.txt')) return 'txt';
+        return 'unknown';
+    }
+    
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    getFileIcon(fileType) {
+        switch (fileType) {
+            case 'pdf':
+                return `<svg class="h-12 w-12 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                </svg>`;
+            case 'docx':
+                return `<svg class="h-12 w-12 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                </svg>`;
+            case 'txt':
+                return `<svg class="h-12 w-12 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                </svg>`;
+            default:
+                return `<svg class="h-12 w-12 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+                </svg>`;
+        }
     }
 
     updateImagePreview() {
@@ -212,18 +290,40 @@ class MOMBuilder {
         
         grid.innerHTML = '';
         
-        this.uploadedImages.forEach(image => {
-            const imageDiv = document.createElement('div');
-            imageDiv.className = 'image-preview';
-            imageDiv.innerHTML = `
-                <img src="${image.dataUrl}" alt="Preview">
-                <button type="button" class="remove-image" onclick="momBuilder.removeImage('${image.id}')">
-                    <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            `;
-            grid.appendChild(imageDiv);
+        this.uploadedImages.forEach(file => {
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'image-preview file-preview';
+            
+            if (file.type === 'image') {
+                fileDiv.innerHTML = `
+                    <img src="${file.dataUrl}" alt="Preview" class="file-thumbnail">
+                    <div class="file-info">
+                        <span class="file-name">${file.name}</span>
+                    </div>
+                    <button type="button" class="remove-image" onclick="momBuilder.removeImage('${file.id}')">
+                        <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                `;
+            } else {
+                const fileIcon = this.getFileIcon(file.type);
+                fileDiv.innerHTML = `
+                    <div class="file-icon-container">
+                        ${fileIcon}
+                    </div>
+                    <div class="file-info">
+                        <span class="file-name">${file.name}</span>
+                        <span class="file-size">${file.size}</span>
+                    </div>
+                    <button type="button" class="remove-image" onclick="momBuilder.removeImage('${file.id}')">
+                        <svg class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                `;
+            }
+            grid.appendChild(fileDiv);
         });
     }
 
@@ -247,23 +347,97 @@ class MOMBuilder {
         container.scrollIntoView({ behavior: 'smooth' });
     }
 
-    downloadMOM() {
+    toggleDownloadDropdown() {
+        const dropdown = document.getElementById('download-dropdown');
+        const isHidden = dropdown.classList.contains('hidden');
+        
+        if (isHidden) {
+            dropdown.classList.remove('hidden');
+        } else {
+            dropdown.classList.add('hidden');
+        }
+    }
+    
+    handleOutsideClick(event) {
+        const dropdown = document.getElementById('download-dropdown');
+        const downloadBtn = document.getElementById('download-btn');
+        
+        if (!dropdown.contains(event.target) && !downloadBtn.contains(event.target)) {
+            dropdown.classList.add('hidden');
+        }
+    }
+    
+    getAgendaHeading() {
+        // Extract the main heading from MOM content for filename
+        const lines = this.currentMOMContent.split('\n');
+        for (let line of lines) {
+            if (line.startsWith('# ')) {
+                // Remove markdown heading and clean up for filename
+                return line.replace('# ', '').replace(/[^\w\s-]/g, '').trim().replace(/\s+/g, '_');
+            }
+        }
+        return 'mom'; // fallback filename
+    }
+    
+    async downloadMOM(format = 'md') {
         if (!this.currentMOMContent) {
             this.showError('No MOM content to download');
             return;
         }
         
-        const blob = new Blob([this.currentMOMContent], { type: 'text/markdown' });
-        const url = URL.createObjectURL(blob);
+        // Hide dropdown
+        document.getElementById('download-dropdown').classList.add('hidden');
         
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'mom.md';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        const agendaHeading = this.getAgendaHeading();
         
-        URL.revokeObjectURL(url);
+        if (format === 'md') {
+            // Direct markdown download
+            const blob = new Blob([this.currentMOMContent], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${agendaHeading}.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            
+            URL.revokeObjectURL(url);
+        } else {
+            // For txt and docx, call backend API
+            try {
+                const response = await fetch(`/api/download-mom/${format}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        content: this.currentMOMContent,
+                        filename: agendaHeading
+                    })
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${agendaHeading}.${format}`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    
+                    URL.revokeObjectURL(url);
+                } else {
+                    const errorData = await response.json();
+                    this.showError(errorData.error || `Failed to download ${format.toUpperCase()} file`);
+                }
+            } catch (error) {
+                console.error(`Error downloading ${format} file:`, error);
+                this.showError(`Network error. Failed to download ${format.toUpperCase()} file.`);
+            }
+        }
     }
 
     setProcessing(processing) {

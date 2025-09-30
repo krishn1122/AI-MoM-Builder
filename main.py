@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional
 import os
@@ -8,7 +8,8 @@ from dotenv import load_dotenv
 import uvicorn
 
 from services.gemini_service import GeminiService
-from models.requests import TextProcessRequest, ImageProcessRequest
+from services.file_converter import FileConverter
+from models.requests import TextProcessRequest, ImageProcessRequest, DownloadRequest
 from utils.timezone_helper import TimezoneHelper
 
 # Load environment variables
@@ -100,6 +101,48 @@ async def process_images(request: ImageProcessRequest):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to process images: {str(e)}")
+
+@app.post("/api/download-mom/{format}")
+async def download_mom(format: str, request: DownloadRequest):
+    """Download MOM in specified format (txt or docx)"""
+    try:
+        if format not in ['txt', 'docx']:
+            raise HTTPException(status_code=400, detail="Invalid format. Supported formats: txt, docx")
+        
+        if not request.content or not request.content.strip():
+            raise HTTPException(status_code=400, detail="Content is required")
+        
+        filename = request.filename or "mom"
+        
+        if format == 'txt':
+            # Convert to plain text
+            txt_content = FileConverter.markdown_to_txt(request.content)
+            
+            return StreamingResponse(
+                iter([txt_content.encode('utf-8')]),
+                media_type='text/plain',
+                headers={"Content-Disposition": f"attachment; filename={filename}.txt"}
+            )
+        
+        elif format == 'docx':
+            # Convert to DOCX
+            try:
+                docx_io = FileConverter.markdown_to_docx(request.content)
+                
+                return StreamingResponse(
+                    iter([docx_io.getvalue()]),
+                    media_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    headers={"Content-Disposition": f"attachment; filename={filename}.docx"}
+                )
+            except ImportError as ie:
+                raise HTTPException(status_code=500, detail=str(ie))
+            
+    except HTTPException:
+        raise
+    except ImportError as ie:
+        raise HTTPException(status_code=500, detail=f"Missing dependency: {str(ie)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to convert to {format}: {str(e)}")
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))

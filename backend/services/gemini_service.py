@@ -162,3 +162,33 @@ Handwritten note cues → structured output*
             }
         except Exception as e:
             raise Exception(f"Failed to generate MOM from images: {str(e)}")
+    
+    async def generate_mom_from_files(self, files: List[str]) -> Dict:
+        """Generate MOM from mixed files (images, PDFs, DOCX, TXT) using Gemini"""
+        try:
+            if not files or len(files) == 0:
+                raise ValueError("No files provided")
+            
+            from .file_processor import FileProcessor
+            
+            # Process all files and extract content
+            processed_files = FileProcessor.process_files(files)
+            
+            if not processed_files:
+                raise ValueError("No valid content could be extracted from the uploaded files")
+            
+            # Create mixed content for Gemini
+            content_parts = FileProcessor.create_mixed_content_for_gemini(processed_files)
+            
+            # Add system prompt at the beginning
+            final_content = [self.system_prompt] + content_parts
+            
+            # Generate content with Gemini
+            response = await self.model.generate_content_async(final_content)
+            
+            return {
+                "content": response.text,
+                "format": "markdown"
+            }
+        except Exception as e:
+            raise Exception(f"Failed to generate MOM from files: {str(e)}")
