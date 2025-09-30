@@ -26,6 +26,7 @@ allowed_origins = [
     "http://localhost:5000",
     "https://*.vercel.app",
     "https://mom-builder-free.vercel.app",  # Replace with your actual Vercel domain
+    "https://mom-builder-free-krishn1122.vercel.app",  # Add variations
 ]
 
 # In development, allow all origins
