@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 class TextProcessRequest(BaseModel):
     text: str
@@ -9,4 +9,4 @@ class ImageProcessRequest(BaseModel):
 
 class DownloadRequest(BaseModel):
     content: str
-    filename: str
+    filename: Optional[str] = None
