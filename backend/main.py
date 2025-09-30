@@ -27,6 +27,8 @@ allowed_origins = [
     "https://*.vercel.app",
     "https://mom-builder-free.vercel.app",  # Replace with your actual Vercel domain
     "https://mom-builder-free-krishn1122.vercel.app",  # Add variations
+    # Add your actual Vercel URL here when you get it
+    # "https://your-actual-vercel-url.vercel.app",
 ]
 
 # In development, allow all origins
